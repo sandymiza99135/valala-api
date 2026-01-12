@@ -1,0 +1,94 @@
+<div class="profile-container animate-fade-in">
+	<div
+		class="flex flex-wrap items-center bg-gradient-to-r from-primary to-orange-500 rounded-xl p-6 shadow-lg text-white">
+		<div class="flex space-x-5 items-center w-full sm:w-auto">
+			<div class="w-24 h-24 rounded-full border-4 border-white/30 overflow-hidden shadow-2xl bg-white">
+				<img [src]="user?.picture || 'assets/images/avatar.png'" alt="Avatar" class="w-full h-full object-cover">
+			</div>
+			<div>
+				<h2 class="text-2xl font-bold">{{ user?.name }}</h2>
+				<p class="opacity-90 flex items-center">
+					<mat-icon class="text-sm h-4 w-4 mr-1">email</mat-icon> {{ user?.email }}
+				</p>
+			</div>
+		</div>
+		<div class="w-full sm:w-auto sm:ml-auto mt-6 sm:mt-0 text-sm bg-white/10 p-4 rounded-lg backdrop-blur-md">
+			<p><strong>Membre depuis :</strong> {{ (user?.created_at | date:'dd MMMM yyyy') || 'Janvier 2026' }}</p>
+			<p class="mt-1"><strong>Rôle :</strong> {{ user?.role === 'admin' ? 'Administrateur' : 'Membre Partenaire' }}</p>
+		</div>
+	</div>
+
+	<div class="border bg-white mt-8 rounded-xl shadow-sm overflow-hidden">
+		<div class="flex items-center p-4 bg-gray-50 border-b">
+			<h6 class="font-bold text-gray-700 flex items-center">
+				<mat-icon class="mr-2 text-primary">account_box</mat-icon> Informations du Compte
+			</h6>
+			<button
+				class="text-primary hover:bg-orange-50 px-3 py-1 rounded-md transition-all ml-auto flex items-center font-semibold text-sm">
+				<mat-icon class="text-lg mr-1">edit</mat-icon> Modifier
+			</button>
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">E-mail</span>
+				<p class="ll-dataset__value text-gray-800 font-medium">{{ user?.email }}</p>
+			</div>
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">Identifiant Unique
+					(ID)</span>
+				<p class="ll-dataset__value text-gray-800 font-medium">#{{ user?.id }}</p>
+			</div>
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">Nom
+					d'utilisateur</span>
+				<p class="ll-dataset__value text-gray-800 font-medium">{{ user?.name?.split(' ')[0]?.toLowerCase() || 'membre'
+					}}</p>
+			</div>
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">Statut de
+					vérification</span>
+				<p class="flex items-center">
+					<span class="px-2 py-1 rounded-full text-xs font-bold"
+						[ngClass]="user?.is_verified ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'">
+						{{ user?.is_verified ? 'Compte Vérifié' : 'En attente de vérification' }}
+					</span>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="border bg-white mt-8 rounded-xl shadow-sm overflow-hidden">
+		<div class="flex items-center p-4 bg-gray-50 border-b">
+			<h6 class="font-bold text-gray-700 flex items-center">
+				<mat-icon class="mr-2 text-primary">person</mat-icon> Détails Personnels
+			</h6>
+			<button
+				class="text-primary hover:bg-orange-50 px-3 py-1 rounded-md transition-all ml-auto flex items-center font-semibold text-sm">
+				<mat-icon class="text-lg mr-1">edit</mat-icon> Compléter
+			</button>
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">Nom complet</span>
+				<p class="ll-dataset__value text-gray-800 font-medium">{{ user?.name || 'Non renseigné' }}</p>
+			</div>
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">Organisation /
+					Association</span>
+				<p class="ll-dataset__value text-gray-800 font-medium">Lieblings Association</p>
+			</div>
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">Localisation</span>
+				<p class="ll-dataset__value text-gray-800 font-medium">Madagascar</p>
+			</div>
+			<div class="ll-dataset">
+				<span class="ll-dataset__label text-gray-500 text-xs uppercase tracking-wider font-bold">Méthode de
+					connexion</span>
+				<p class="ll-dataset__value text-gray-800 font-medium flex items-center">
+					<mat-icon class="text-sm mr-1">{{ user?.google_id ? 'star' : 'lock' }}</mat-icon>
+					{{ user?.google_id ? 'Google Auth' : 'E-mail classique' }}
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

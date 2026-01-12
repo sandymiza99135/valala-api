@@ -1,0 +1,92 @@
+<div class="valala-login" [style.background-image]="'url(assets/images/login-bg.jpg)'">
+  <div class="overlay"></div>
+
+  <div class="container min-h-screen flex items-center justify-center p-4">
+    <div class="login-card shadow-2xl overflow-hidden flex flex-col md:flex-row-reverse">
+
+      <div class="hero-section flex flex-col justify-between p-8 xl:p-12 text-white md:w-5/12">
+        <a [routerLink]="['']" class="logo-link">
+          <img src="assets/images/logo.jpg" alt="Logo" class="w-32 rounded-lg shadow-lg" />
+        </a>
+
+        <div class="hero-text">
+          <h2 class="text-4xl font-serif font-bold italic mb-4">Mpirahalahy mianala...</h2>
+          <p class="text-lg opacity-90 leading-relaxed font-light">
+            Rejoignez une communauté où l'effort est partagé et l'impact est démultiplié.
+            <br>
+            <strong>Valala iray ifanapahana.</strong>
+          </p>
+        </div>
+
+        <div class="footer-hero text-sm opacity-60">
+          Ensemble, nous allons plus loin.
+        </div>
+      </div>
+
+      <div class="form-section bg-white p-8 xl:p-12 md:w-7/12 flex flex-col justify-center">
+        <form #signupForm="ngForm">
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">Créer un compte</h1>
+          <p class="text-gray-500 mb-6">Devenez membre de notre grande famille.</p>
+
+          <div class="input-group mb-4">
+            <label class="label-custom" for="name">Nom complet</label>
+            <div class="input-wrapper">
+              <mat-icon>person_outline</mat-icon>
+              <input name="name" [(ngModel)]="registerData.name" type="text" placeholder="Votre nom complet" required />
+            </div>
+          </div>
+
+          <div class="input-group mb-4">
+            <label class="label-custom" for="email">E-mail</label>
+            <div class="input-wrapper">
+              <mat-icon>mail_outline</mat-icon>
+              <input name="email" [(ngModel)]="registerData.email" type="email" placeholder="votre@email.com"
+                required />
+            </div>
+          </div>
+
+          <div class="input-group mb-4">
+            <label class="label-custom" for="password">Mot de passe</label>
+            <div class="input-wrapper">
+              <mat-icon>lock_outline</mat-icon>
+              <input name="password" [(ngModel)]="registerData.password" type="password" placeholder="••••••••"
+                required />
+            </div>
+          </div>
+
+          <div class="input-group mb-6">
+            <label class="label-custom" for="password2">Confirmation</label>
+            <div class="input-wrapper">
+              <mat-icon>verified_user</mat-icon>
+              <input name="password2" [(ngModel)]="registerData.passwordConfirmation" type="password"
+                placeholder="Confirmez votre mot de passe" required />
+            </div>
+          </div>
+
+          <div class="flex items-start mb-6">
+            <label class="checkbox-container">
+              <input type="checkbox" name="terms" [(ngModel)]="termsAccepted" required>
+              <span class="checkmark"></span>
+              <span class="text-xs sm:text-sm text-gray-600">J'accepte les <strong>Conditions Générales</strong>.</span>
+            </label>
+          </div>
+
+          <button class="btn-primary-valala" type="button" (click)="onRegister()">
+            <span>S'inscrire</span>
+          </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+          <p class="text-gray-600">
+            Déjà un compte ?
+            <a routerLink="/auth/login" class="text-primary font-bold hover:text-secondary">Se connecter</a>
+          </p>
+          <a [routerLink]="['/']" class="back-home mt-4">
+            <mat-icon>keyboard_backspace</mat-icon> Retour à l'accueil
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

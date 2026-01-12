@@ -1,0 +1,68 @@
+<h2 mat-dialog-title class="text-success fw-bold border-bottom pb-2">
+  {{ isEditMode ? 'Modifier le produit' : 'Créer un nouveau produit' }}
+</h2>
+
+<mat-dialog-content class="pt-3">
+  <form #productForm="ngForm">
+
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Nom du produit</label>
+      <input type="text" class="form-control form-control-lg" name="name" [(ngModel)]="newProduct.name" required
+        placeholder="e.g. MacBook Pro M3">
+    </div>
+
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Catégorie</label>
+      <select class="form-select form-select-lg" name="category_id" [(ngModel)]="newProduct.category_id" required>
+        <option value="" disabled selected>Selectionner le catégorie du produit</option>
+        <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+      </select>
+    </div>
+
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Description</label>
+      <textarea class="form-control" name="description" [(ngModel)]="newProduct.description" rows="3"></textarea>
+    </div>
+
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Prix ($)</label>
+      <input type="number" class="form-control form-control-lg" name="price" [(ngModel)]="newProduct.price" required>
+    </div>
+
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Nombre de stock</label>
+      <input type="number" class="form-control form-control-lg" name="stock" [(ngModel)]="newProduct.stock" required>
+    </div>
+
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Image du produit</label>
+      <div class="image-upload-box" (click)="fileInput.click()">
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="d-none" #fileInput>
+
+        <div *ngIf="!imageBase64" class="text-center py-4 border-dashed">
+          <i class="bi bi-cloud-arrow-up fs-2 text-primary"></i>
+          <p>Cliquez pour uploader</p>
+        </div>
+
+        <div *ngIf="imageBase64" class="text-center">
+          <img [src]="imageBase64" class="img-fluid rounded" style="max-height: 200px;">
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="border-top pt-3 d-flex gap-3">
+        <button type="button" class="btn btn-light" (click)="resetForm()">Clear</button>
+        <button type="submit" class="btn btn-primary px-4" [disabled]="!productForm.valid || !imageBase64">
+          Save Product
+        </button>
+      </div> -->
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="border-top pt-2">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-raised-button color="primary" [disabled]="!productForm.valid" (click)="onSave()">
+    {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+  </button>
+</mat-dialog-actions>

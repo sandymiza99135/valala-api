@@ -1,0 +1,122 @@
+.valala-login {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  min-height: 100vh;
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    z-index: 1;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .login-card {
+    background: white;
+    border-radius: 24px;
+    max-width: 1000px;
+    width: 100%;
+    min-height: 600px;
+  }
+
+  .hero-section {
+    background: linear-gradient(rgba(230, 126, 34, 0.8), rgba(135, 54, 0, 0.85)), 
+                url('https://www.transparenttextures.com/patterns/natural-paper.png');
+    background-blend-mode: overlay;
+  }
+
+  .label-custom {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4a4a4a;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #fdf2e9; // Teinte chair/ocre très pâle
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 0 15px;
+    transition: all 0.3s;
+
+    mat-icon {
+      color: #e67e22;
+      margin-right: 10px;
+    }
+
+    input {
+      background: transparent;
+      border: none;
+      height: 50px;
+      width: 100%;
+      outline: none;
+      font-size: 0.95rem;
+      color: #2c3e50;
+    }
+
+    &:focus-within {
+      border-color: #e67e22;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+    }
+  }
+
+  .btn-primary-valala {
+    width: 100%;
+    height: 55px;
+    background: #e67e22;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    transition: all 0.3s;
+    box-shadow: 0 10px 20px rgba(230, 126, 34, 0.2);
+
+    &:hover {
+      background: #d35400;
+      transform: translateY(-2px);
+      box-shadow: 0 15px 25px rgba(230, 126, 34, 0.3);
+    }
+  }
+
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    color: #95a5a6;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.3s;
+    
+    mat-icon { font-size: 18px; margin-right: 5px; }
+    &:hover { color: #e67e22; }
+  }
+}
+
+// Custom Checkbox
+.checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+  color: #7f8c8d;
+
+  input { position: absolute; opacity: 0; cursor: pointer; }
+  .checkmark {
+    position: absolute; top: 0; left: 0; height: 20px; width: 20px;
+    background-color: #eee; border-radius: 6px;
+  }
+  &:hover input ~ .checkmark { background-color: #ccc; }
+  input:checked ~ .checkmark { background-color: #e67e22; }
+}

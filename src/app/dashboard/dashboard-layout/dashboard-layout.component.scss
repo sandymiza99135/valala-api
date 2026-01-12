@@ -1,0 +1,40 @@
+.dashboard-wrapper {
+  .active-link {
+    background-color: rgba(230, 126, 34, 0.1) !important; // Couleur Valala
+    color: #e67e22 !important;
+    border-right: 4px solid #e67e22;
+    
+    mat-icon {
+      color: #e67e22 !important;
+    }
+  }
+
+  .custom-nav-list {
+    .mat-list-item {
+      height: 50px !important;
+      margin: 4px 8px;
+      border-radius: 8px;
+      transition: all 0.2s ease-in-out;
+      color: #64748b;
+
+      &:hover:not(.active-link) {
+        background-color: #f1f5f9;
+        color: #e67e22;
+      }
+    }
+  }
+
+  .logout-item:hover {
+    background-color: #fef2f2 !important;
+    color: #ef4444 !important;
+  }
+}
+
+.user-profile-box {
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+}
+
+mat-sidenav {
+  border: none !important;
+  background: transparent !important;
+}

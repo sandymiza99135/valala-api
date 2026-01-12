@@ -1,0 +1,109 @@
+/* Couleur active spécifique au design Splash */
+.active-splash {
+    opacity: 1 !important;
+    font-weight: bold;
+}
+
+/* Effet au survol */
+.hover-opacity-100:hover {
+    opacity: 1 !important;
+    transition: opacity 0.2s ease;
+}
+
+/* Suppression du contour bleu Bootstrap sur les inputs */
+.form-control:focus {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+/* Tracking serré pour le titre */
+.tracking-tight {
+    letter-spacing: -2px;
+}
+
+/* Style des liens de navigation */
+.nav-link {
+    transition: all 0.2s;
+}
+
+/* Défilement si le menu est trop long */
+.sidenav {
+    height:100% ;
+    overflow-y: auto;
+    color: #000;
+}
+/* Couleur active pour les liens principaux */
+.active-link {
+    opacity: 1 !important;
+    color: #0d6efd !important; /* Bleu ou la couleur de ton logo */
+    font-weight: bold;
+}
+
+/* Effets de transition pour l'ouverture fluide */
+.transition-all {
+    transition: all 0.3s ease-in-out !important;
+}
+
+.transition-transform {
+    transition: transform 0.3s ease;
+}
+
+/* Opacité au survol */
+.hover-opacity-100:hover {
+    opacity: 1 !important;
+}
+li,ul{
+    width:100% ;
+}
+
+.hover-dark:hover {
+    color: #000 !important;
+    text-decoration: underline;
+}
+
+/* Ajustement pour l'image du logo */
+.logo img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Container de la liste : ligne tout en haut */
+.list-container {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Chaque item a une ligne en bas */
+.menu-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Style des liens */
+.nav-link {
+    transition: opacity 0.2s ease;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    opacity: 1 !important;
+}
+
+/* Gestion de la flèche */
+.arrow-icon {
+    transition: transform 0.3s ease;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Animation fluide du sous-menu */
+.submenu {
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease;
+    opacity: 0.8;
+}
+
+/* État actif */
+.active-link {
+    opacity: 1 !important;
+    font-weight: 500;
+}

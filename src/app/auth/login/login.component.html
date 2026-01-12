@@ -1,0 +1,76 @@
+<div class="valala-login" [style.background-image]="'url(assets/images/login-bg.jpg)'">
+  <div class="overlay"></div>
+
+  <div class="container min-h-screen flex items-center justify-center p-4">
+    <div class="login-card shadow-2xl overflow-hidden flex flex-col md:flex-row">
+
+      <div class="hero-section flex flex-col justify-between p-8 xl:p-12 text-white md:w-5/12">
+        <a [routerLink]="['']" class="logo-link">
+          <img src="assets/images/logo.jpg" alt="Logo" class="w-32 rounded-lg shadow-lg" />
+        </a>
+
+        <div class="hero-text">
+          <h2 class="text-4xl font-serif font-bold italic mb-4">Valala iray ifanapahana...</h2>
+          <p class="text-lg opacity-90 leading-relaxed font-light">
+            Parce que chaque geste compte, rejoignez notre communauté d'entraide et de partage.
+          </p>
+        </div>
+
+        <div class="footer-hero text-sm opacity-60">
+          © 2026 Votre Association
+        </div>
+      </div>
+
+      <div class="form-section bg-white p-8 xl:p-16 md:w-7/12 flex flex-col justify-center">
+        <form (submit)="login()">
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">Tonga soa !</h1>
+          <p class="text-gray-500 mb-8">Connectez-vous pour continuer l'aventure.</p>
+
+          <div class="input-group mb-6">
+            <label class="label-custom" for="email">E-mail ou Utilisateur</label>
+            <div class="input-wrapper">
+              <mat-icon>person_outline</mat-icon>
+              <input [(ngModel)]="email" name="email" id="email" type="text" placeholder="ex: rabe@mail.mg" required />
+            </div>
+          </div>
+
+          <div class="input-group mb-6">
+            <label class="label-custom" for="password">Mot de passe</label>
+            <div class="input-wrapper">
+              <mat-icon>lock_open</mat-icon>
+              <input [(ngModel)]="password" name="password" id="password" type="password" placeholder="••••••••"
+                required />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mb-8">
+            <label class="checkbox-container">
+              <input type="checkbox" id="remember_me" name="remember_me">
+              <span class="checkmark"></span>
+              Se souvenir de moi
+            </label>
+            <a href="#" class="text-sm font-semibold text-primary hover:underline">Oublié ?</a>
+          </div>
+
+          <button class="btn-primary-valala" type="submit">
+            Se connecter
+          </button>
+
+          <div id="googleBtn" class="mt-4"></div>
+        </form>
+
+        <div class="mt-10 pt-6 border-t border-gray-100 text-center">
+          <p class="text-gray-600">
+            Pas encore membre ?
+            <a routerLink="/auth/signup" class="text-primary font-bold hover:text-secondary transition-colors">Créer un
+              compte</a>
+          </p>
+          <a [routerLink]="['/']" class="back-home mt-6">
+            <mat-icon>keyboard_backspace</mat-icon> Retour à l'accueil
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

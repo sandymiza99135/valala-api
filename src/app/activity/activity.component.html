@@ -1,0 +1,107 @@
+<!-- <section class="page-header py-5 bg-light mb-4">
+  <div class="container text-center">
+    <span class="badge rounded-pill bg-primary-soft text-primary px-3 py-2 mb-3 text-uppercase fw-bold">
+      Découvrez notre impact
+    </span>
+    <h1 class="display-4 fw-bold text-dark mb-3">
+      Nos Activités & Événements
+    </h1>
+    <div class="title-separator mx-auto mb-4"></div>
+    <p class="lead text-secondary mx-auto" style="max-width: 700px;">
+      Explorez nos actions réalisées, nos événements à venir et l'engagement de notre association sur le terrain.
+    </p>
+
+  </div>
+</section> -->
+<nav class="sticky-filters shadow-sm">
+  <div class="container">
+    <div class="filter-wrapper d-flex justify-content-center flex-wrap gap-2 py-3">
+      <button class="filter-chip" [class.active]="statusFilter === ''" (click)="setFilter('tous')">
+        <i class="bi bi-grid-fill me-2"></i>Tout voir
+      </button>
+      <button class="filter-chip" [class.active]="statusFilter === 'prevue'" (click)="setFilter('prevue')">
+        <i class="bi bi-calendar-event me-2"></i>Événements à venir
+      </button>
+      <button class="filter-chip" [class.active]="statusFilter === 'terminé'" (click)="setFilter('terminé')">
+        <i class="bi bi-check-circle-fill me-2"></i>Actions réalisées
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container py-5">
+  <div class="row g-4">
+    <div class="col-12 col-md-6 col-lg-4" *ngFor="let act of activities">
+      <div class="card h-100 border-0 shadow-sm hover-card transition-all bg-white">
+
+        <div class="position-relative overflow-hidden rounded-top-4">
+          <div class="status-badge">
+            <span [ngClass]="{
+              'bg-success': act.statut === 'terminé',
+              'bg-primary': act.statut === 'prevue',
+              'bg-warning': act.statut === 'en_cours'
+            }" class="badge rounded-pill px-3 py-2 text-uppercase shadow-sm">
+              {{ act.statut || 'Activité' }}
+            </span>
+          </div>
+          <img [src]="act.selectedImage ? hostApi + act.selectedImage : 'assets/placeholder.jpg'"
+            class="card-img-top activity-img" alt="Image principale">
+        </div>
+
+        <div class="card-body p-4">
+          <div class="text-primary small fw-bold mb-2">
+            <i class="bi bi-calendar3 me-1"></i> {{ act.date_activite | date:'dd/MM/yyyy' }}
+            <span class="text-muted mx-2">|</span>
+            <i class="bi bi-geo-alt me-1"></i> {{ act.lieu }}
+          </div>
+          <h5 class="card-title fw-bold text-dark mb-2">{{ act.titre }}</h5>
+          <p class="card-text text-secondary mb-3 line-clamp">{{ act.description }}</p>
+
+          <div class="gallery-wrapper d-flex gap-2 mb-4">
+            <div *ngFor="let img of act.images | slice:0:4; let last = last" class="mini-gallery-item"
+              (click)="act.selectedImage = img" style="cursor: pointer;">
+
+              <img [src]="hostApi + img" class="rounded-3 shadow-sm thumb-img"
+                [class.border-primary]="act.selectedImage === img">
+              <div *ngIf="last && act.images.length > 4" class="more-photos-overlay rounded-3">
+                +{{ act.images.length - 4 }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <app-pagination 
+  [currentPage]="currentPage" 
+  [totalPages]="totalPages" 
+  (pageChanged)="goToPage($event)">
+</app-pagination> -->
+<nav aria-label="Page navigation" class="mt-5" *ngIf="totalPages > 1">
+  <ul class="pagination pagination-custom justify-content-center align-items-center">
+
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a class="page-control prev" (click)="goToPage(currentPage - 1)">
+        <i class="bi bi-arrow-left-short"></i>
+      </a>
+    </li>
+
+    <div class="page-numbers mx-3">
+      <li class="page-item" *ngFor="let p of getPagesArray()">
+        <a class="page-number-link" [class.active]="currentPage === p" (click)="goToPage(p)">
+          {{ p }}
+        </a>
+      </li>
+    </div>
+
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <a class="page-control next" (click)="goToPage(currentPage + 1)">
+        <i class="bi bi-arrow-right-short"></i>
+      </a>
+    </li>
+
+  </ul>
+</nav>

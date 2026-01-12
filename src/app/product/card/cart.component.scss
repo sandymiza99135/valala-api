@@ -1,0 +1,131 @@
+// .btn-group span {
+//   background: white !important;
+//   color: black !important;
+//   border-left: 0;
+//   border-right: 0;
+//   opacity: 1 !important;
+// }
+
+// .card {
+//   transition: transform 0.2s ease;
+// }
+
+// .object-fit-cover {
+//   object-fit: cover;
+// }
+
+// .sticky-top {
+//   z-index: 10;
+// }
+
+// /* Style spécifique pour le bouton trash au survol */
+// .btn-outline-danger:hover {
+//   background-color: #dc3545;
+//   color: white;
+// }
+// /* Conteneur des boutons */
+// .payment-methods-wrapper {
+//   border-top: 1px solid #eee;
+//   padding-top: 20px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   flex-direction: column;
+// }
+
+// .btn-payment {
+//   width: 25%;
+//   height: 52px; /* Hauteur confortable sur mobile */
+//   border-radius: 8px;
+//   border: none;
+//   cursor: pointer;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   transition: all 0.2s ease;
+//   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+// }
+
+// /* Style Google Pay */
+// .btn-gpay {
+//   background-color: #000000;
+// }
+// .btn-gpay img { height: 26px; }
+// .btn-gpay:hover { background-color: #333; transform: translateY(-1px); }
+
+// /* Style Link */
+// .btn-link {
+//   background-color: #00d66f; /* Couleur Link/Stripe */
+//   color: white;
+//   font-weight: 600;
+// }
+// .link-logo {
+//   background: white;
+//   color: #00d66f;
+//   padding: 1px 6px;
+//   border-radius: 4px;
+//   margin-right: 10px;
+//   font-weight: 900;
+// }
+// .btn-link:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+// .btn-payment:active { transform: scale(0.98); }
+/* Élévation douce au survol des cartes produits */
+.shadow-hover {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.02) !important;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+  }
+}
+
+/* Sélecteur de quantité minimaliste */
+.qty-selector {
+  border: 1px solid #eee;
+  .btn-qty {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+    &:hover {
+      background: var(--bs-primary);
+      color: white;
+    }
+  }
+}
+
+/* Boutons de paiement */
+.w-full { width: 100%; }
+
+.btn-primary {
+  background: linear-gradient(45deg, #0d6efd, #0b5ed7);
+  border: none;
+}
+.payment-methods-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre horizontalement le texte et le bouton */
+}
+
+.paypal-render-container {
+  width: 100%;
+  max-width: 300px; /* Limite la largeur pour un aspect plus élégant */
+  margin: 0 auto;   /* Centre la div elle-même */
+  
+  /* Force le contenu interne du SDK PayPal à se centrer */
+  display: flex;
+  justify-content: center;
+}
+
+/* Optionnel : Ajuster la hauteur pour éviter les sauts de mise en page */
+#paypal-button {
+  min-height: 45px;
+}

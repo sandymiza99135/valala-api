@@ -1,0 +1,14 @@
+<div class="border rounded px-4 lg:px-8 py-8 lg:py-16 h-full">
+  <mat-icon [class]="status === 'paid' ? 'text-success' : 'text-accent'" class="mb-5">
+    {{ icon }}
+  </mat-icon>
+
+  <h6>{{ title }}</h6>
+
+  <div class="count mb-3 mt-5">{{ count }}</div>
+
+  <a [routerLink]="['/dashboard/orders']" [queryParams]="{ status: status }" class="font-semibold" mat-flat-button
+    color="warn">
+    Voir tous
+  </a>
+</div>

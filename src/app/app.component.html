@@ -1,0 +1,6 @@
+<!-- <ll-loader [center]="true"></ll-loader> -->
+<div *ngIf="loadingService.isLoading$ | async" class="loading-container">
+  <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
+  <p>Chargement en cours...</p>
+</div>
+<router-outlet></router-outlet>

@@ -1,0 +1,60 @@
+/* L'overlay qui couvre tout l'écran par-dessus le dashboard */
+.payment-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(248, 249, 250, 0.95); /* Couleur bg-light avec légère transparence */
+  z-index: 99999; /* Très élevé pour couvrir la navbar */
+  display: block;
+}
+
+/* On s'assure que le container prend bien toute la place */
+.container-fluid {
+  height: 100vh !important;
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.rounded-4 {
+  border-radius: 1.5rem !important;
+}
+
+/* Animation d'entrée */
+.card {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* L'animation de secousse */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake-animation {
+  animation: shake 0.3s ease-in-out;
+}
+
+/* Style optionnel pour le bouton désactivé */
+button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}

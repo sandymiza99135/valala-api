@@ -1,0 +1,19 @@
+<div [class.example-is-mobile]="isLessThenLargeDevice">
+  <mat-sidenav-container class="kl-sidenav-container">
+    <mat-sidenav #sidenav [opened]="isSidenavExpand && isLessThenLargeDevice" [mode]="'over'">
+      <ll-sidenav></ll-sidenav>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <ll-header (toggleSidenav)="toggleSidenav()" topFixed="true"></ll-header>
+
+      <app-hero-dynamic *ngIf="heroData"></app-hero-dynamic>
+
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+
+      <ll-footer></ll-footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

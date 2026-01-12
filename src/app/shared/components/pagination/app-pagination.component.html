@@ -1,0 +1,25 @@
+<nav aria-label="Page navigation" class="mt-4" *ngIf="totalPages > 1">
+  <ul class="pagination pagination-custom justify-content-center align-items-center">
+
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <a class="page-control prev" (click)="goToPage(currentPage - 1)">
+        <i class="bi bi-arrow-left-short"></i>
+      </a>
+    </li>
+
+    <div class="page-numbers mx-3">
+      <li class="page-item" *ngFor="let p of getPagesArray()">
+        <a class="page-number-link" [class.active]="currentPage === p" (click)="goToPage(p)">
+          {{ p }}
+        </a>
+      </li>
+    </div>
+
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <a class="page-control next" (click)="goToPage(currentPage + 1)">
+        <i class="bi bi-arrow-right-short"></i>
+      </a>
+    </li>
+
+  </ul>
+</nav>

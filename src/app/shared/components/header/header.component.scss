@@ -1,0 +1,104 @@
+.ll_header {
+  padding: 15px 0;
+  @apply bg-gray-50;
+  &.top-fixed {
+    @apply fixed -inset-x-0 top-0;
+    padding: 15px 0;
+    z-index: 9999;
+    background-color: #F4F1EA;
+    transition: background-color 0.5s ease;
+  }
+}
+.logo {
+  max-width: 120px;
+}
+._sidenav__toggler {
+  $iconSize: 30px;
+  $buttonSize: 42px;
+  height: $buttonSize;
+  width: $buttonSize;
+  .mat-icon {
+    font-size: $iconSize;
+    height: $iconSize;
+    width: $iconSize;
+    line-height: $iconSize;
+  }
+}
+/* Dans styles.scss */
+.mat-warn {
+  background-color: #2D5A27 !important; /* Jaune Ambré pour le Login */
+  color: white !important;           /* Texte noir pour la lisibilité */
+}
+.mat-warn:hover {
+  background-color: white !important; /* Jaune Ambré pour le Login */
+  color: #2D5A27!important;           /* Texte noir pour la lisibilité */
+}
+
+
+
+.mat-accent {
+  background-color: #007BFF !important; /* Orange pour le Join Now */
+  color: white !important;
+}
+.mat-accent:hover {
+  background-color: white !important; /* Orange pour le Join Now */
+  color:#007BFF !important;
+}
+
+@media (min-width: 768px) {
+  .mat-warn {
+  background-color: #2D5A27 !important; /* Jaune Ambré pour le Login */
+  color: white !important;           /* Texte noir pour la lisibilité */
+}
+.mat-warn:hover {
+  background-color: white !important; /* Jaune Ambré pour le Login */
+  color: #2D5A27!important;           /* Texte noir pour la lisibilité */
+}
+
+
+
+.mat-accent {
+  background-color: #007BFF !important; /* Orange pour le Join Now */
+  color: white !important;
+}
+.mat-accent:hover {
+  background-color: white !important; /* Orange pour le Join Now */
+  color:#007BFF !important;
+}
+  .logo {
+    max-width: 145px;
+  }
+  ._sidenav__toggler {
+    $iconSize: 38px;
+    $buttonSize: 52px;
+    height: $buttonSize;
+    width: $buttonSize;
+    .mat-icon {
+      font-size: $iconSize;
+      height: $iconSize;
+      width: $iconSize;
+      line-height: $iconSize;
+    }
+  }
+  
+}
+.dropdown-menu {
+  z-index: 1050; /* Valeur standard Bootstrap pour être au-dessus */
+}
+/* État masqué par défaut */
+.dropdown-menu {
+  display: block; /* On force le block pour permettre l'animation */
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(15px); /* Légèrement plus bas pour l'effet de montée */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* Désactive les clics quand invisible */
+}
+
+/* État affiché (quand Bootstrap ajoute la classe .show) */
+.dropdown-menu.show {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto; /* Réactive les clics */
+}

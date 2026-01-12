@@ -1,0 +1,96 @@
+<header class="ll_header" [class.top-fixed]="topFixed" [ngClass]="{ 'bg-gray-50 shadow': topFixed && isScrolled }">
+  <div class="container">
+    <div class="flex items-center">
+      <div class="flex items-center">
+        <a class="logo" [routerLink]="['']"><img src="assets/images/logo.jpg" alt="Logo" /></a>
+        <ul class="flex items-center ml-5" *ngIf="!isLessThenLargeDevice && menuList?.length">
+          <li *ngFor="let menu of menuList" class="relative group">
+
+            <a *ngIf="!menu.children" mat-button [routerLink]="menu.path" routerLinkActive="bg-gray-100"
+              class="text-lg font-bold py-2 px-5">
+              {{ menu.name }}
+            </a>
+
+            <button *ngIf="menu.children" mat-button class="text-lg font-bold py-2 px-5 flex items-center gap-1">
+              {{ menu.name }}
+              <mat-icon class="text-base">expand_more</mat-icon>
+            </button>
+
+            <ul *ngIf="menu.children" class="absolute left-0 top-full mt-2 w-56 bg-white shadow-lg rounded-md opacity-0 invisible
+               group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <li *ngFor="let child of menu.children">
+                <a [routerLink]="child.path" routerLinkActive="bg-gray-100"
+                  class="block px-5 py-3 hover:bg-gray-100 font-medium">
+                  {{ child.name }}
+                </a>
+              </li>
+            </ul>
+
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex items-center ml-auto">
+
+        <button mat-icon-button class="relative mr-4" [routerLink]="['/products/incart']">
+          <mat-icon class="text-2xl text-gray-700">shopping_cart</mat-icon>
+          <span *ngIf="cartCount > 0"
+            class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center shadow-sm">
+            {{ cartCount }}
+          </span>
+        </button>
+
+        <button *ngIf="isLessThenLargeDevice" (click)="toggleSidenav.emit()" class="_sidenav__toggler md:ml-3 ms-sm-3"
+          mat-icon-button>
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <div *ngIf="!IsConnected" class="hidden items-center md:flex">
+          <a [routerLink]="['/auth/login']" mat-raised-button color="warn" class="text-lg font-bold py-2 px-5">Login</a>
+          <a [routerLink]="['/auth/signup']" mat-raised-button color="accent"
+            class="text-lg font-bold py-2 px-5 ml-2">Join Now</a>
+        </div>
+
+        <div class="items-center md:flex" *ngIf="IsConnected">
+          <div class="flex items-center ml-4 border-l pl-4 dropdown">
+
+            <span class="mr-3 font-bold text-gray-700">{{ user.name.split(' ')[0] }}</span>
+
+            <button class="btn p-0 border-0 bg-transparent d-flex align-items-center" type="button" id="userDropdown"
+              data-bs-toggle="dropdown" aria-expanded="false">
+
+              <img *ngIf="user.picture" [src]="user.picture"
+                class="w-10 h-10 rounded-full border-2 border-[#FF6B00] object-cover" />
+
+              <mat-icon *ngIf="!user.picture" class="text-3xl text-gray-400">account_circle</mat-icon>
+
+              <i class="bi bi-chevron-down ms-1 small text-muted"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3" aria-labelledby="userDropdown">
+              <li>
+                <a class="dropdown-item d-flex align-items-center py-2" [routerLink]="['/profile']">
+                  <mat-icon class="me-3 text-secondary">person</mat-icon>
+                  <span class="font-medium">Mon Profil</span>
+                </a>
+              </li>
+
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+
+              <li>
+                <button class="dropdown-item d-flex align-items-center py-2 text-danger" (click)="onLogout()">
+                  <mat-icon class="me-3">exit_to_app</mat-icon>
+                  <span class="font-medium">Déconnexion</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</header>

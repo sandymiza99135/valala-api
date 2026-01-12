@@ -1,0 +1,71 @@
+<h2 mat-dialog-title class="text-success fw-bold border-bottom pb-2">
+  {{ isEditMode ? 'Modifier l\'activité' : 'Créer une nouvelle activité' }}
+</h2>
+
+<mat-dialog-content class="pt-3">
+  <form #activityForm="ngForm">
+
+    <div class="form-group-custom mb-3">
+      <label class="fw-bold text-secondary small text-uppercase">Titre de l'activité</label>
+      <input type="text" class="form-control" name="titre" [(ngModel)]="newActivity.titre" required
+        placeholder="Ex: Assemblée Générale">
+    </div>
+
+    <div class="form-group-custom mb-3">
+      <label class="fw-bold text-secondary small text-uppercase">Description</label>
+      <textarea class="form-control" name="description" [(ngModel)]="newActivity.description" rows="3"></textarea>
+    </div>
+
+    <div class="form-group-custom mb-3">
+      <label class="fw-bold text-secondary small text-uppercase">Lieu</label>
+      <input type="text" class="form-control" name="lieu" [(ngModel)]="newActivity.lieu" required
+        placeholder="Tamatave">
+    </div>
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Type d'activité</label>
+      <select class="form-select form-select-lg" name="statut" [(ngModel)]="newActivity.statut" required>
+        <option value="" disabled selected>Selectionner le type d'activité</option>
+        <option value="terminé">Actions realisés</option>
+        <option value="prevue">Evènement à venir</option>
+      </select>
+    </div>
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase">Date de l'événement</label>
+      <input type="date" class="form-control" name="date" [(ngModel)]="newActivity.date_activite" required>
+    </div>
+
+    <div class="form-group-custom mb-4">
+      <label class="fw-bold text-secondary small text-uppercase mb-2">Images de l'activité</label>
+
+      <div class="upload-container border rounded p-3 bg-light" (click)="fileInput.click()" style="cursor: pointer;">
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="d-none" #fileInput multiple>
+
+        <div *ngIf="imagesBase64.length === 0" class="text-center py-3">
+          <mat-icon class="text-primary fs-1" style="width: 48px; height: 48px;">cloud_upload</mat-icon>
+          <p class="mb-0">Cliquez pour sélectionner plusieurs images</p>
+        </div>
+
+        <div *ngIf="imagesBase64.length > 0" class="d-flex flex-wrap gap-2">
+          <div *ngFor="let img of imagesBase64; let i = index" class="position-relative thumb-container">
+            <img [src]="img" class="rounded border shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+            <button type="button" class="btn-remove" (click)="$event.stopPropagation(); removeImage(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <div class="add-more d-flex align-items-center justify-content-center border rounded bg-white"
+            style="width: 80px; height: 80px;">
+            <mat-icon class="text-muted">add</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="border-top pt-2">
+  <button mat-button (click)="onCancel()">Annuler</button>
+  <button mat-raised-button color="primary" [disabled]="!activityForm.valid" (click)="onSave()">
+    {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+  </button>
+</mat-dialog-actions>

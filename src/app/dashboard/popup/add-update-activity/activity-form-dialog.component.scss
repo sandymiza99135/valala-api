@@ -1,0 +1,39 @@
+::ng-deep {
+  .mat-card-header-text {
+    margin: 0 !important;
+  }
+}
+.view__btn,
+.action_icon__btn {
+  $btnSize: 30px;
+  $iconSize: 22px;
+  line-height: $btnSize;
+  width: $btnSize;
+  height: $btnSize;
+  .mat-icon {
+    font-size: $iconSize;
+    line-height: $iconSize;
+    width: $iconSize;
+    height: $iconSize;
+  }
+}
+/* Force l'empilement vertical */
+form .row {
+    display: block !important; /* Désactive le flexbox de Bootstrap si hérité */
+}
+
+form .col-12 {
+    width: 100% !important;
+    display: block !important;
+    margin-bottom: 1.5rem; /* Espace entre les champs */
+}
+
+label {
+    display: block !important;
+    margin-bottom: 8px !important;
+    text-align: left !important;
+}
+
+input, select, textarea {
+    width: 100% !important; /* Force la largeur totale */
+}

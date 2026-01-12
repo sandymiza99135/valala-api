@@ -1,0 +1,64 @@
+.hero-wrapper {
+  margin-top: 150px;
+  background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+  
+  // Style pour les balises injectées via innerHTML
+  ::ng-deep {
+    span {
+      color: #ffc107; // Met les <span> en jaune
+    }
+    strong {
+      text-decoration: underline;
+    }
+  }
+}
+
+.hero-divider {
+  width: 60px;
+  height: 4px;
+  background-color: #ffc107;
+  margin-top: 1rem;
+}
+
+/* Section Header */
+.page-header {
+  /* Fixer le composant */
+  
+  position: fixed;
+  top:130px; /* Ajustez selon la hauteur réelle de votre ll-header */
+  left: 0;
+  right: 0;
+  z-index: 100; /* Doit être inférieur au z-index du header mais supérieur au contenu */
+  
+  /* Style */
+  margin-top: 0; /* On retire la marge car il est en position fixed */
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+  border-bottom: 1px solid #eee;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Badge avec couleur primaire douce */
+.bg-primary-soft {
+  background-color: rgba(13, 110, 253, 0.1) !important;
+}
+
+/* Séparateur décoratif sous le titre */
+.title-separator {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #0d6efd, #6610f2);
+  border-radius: 2px;
+}
+
+/* Style de la typographie */
+h1.display-4 {
+  letter-spacing: -1px;
+  color: #212529;
+  font-size: 2.5rem; /* Réduire légèrement si c'est trop grand pour un mode fixe */
+}
+
+.lead {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}

@@ -1,0 +1,142 @@
+<!-- <div class="card shadow-sm border-0">
+  <div class="card-body p-4">
+    <h5 class="text-success fw-bold mb-4">Crér de nouveau produit</h5>
+
+    <form #productForm="ngForm" (ngSubmit)="onAddProduct()">
+
+      <div class="form-group-custom mb-4">
+        <label class="fw-bold text-secondary small text-uppercase">Nom du produit</label>
+        <input type="text" class="form-control form-control-lg" name="name" [(ngModel)]="newProduct.name" required
+          placeholder="e.g. MacBook Pro M3">
+      </div>
+
+      <div class="form-group-custom mb-4">
+        <label class="fw-bold text-secondary small text-uppercase">Catégorie</label>
+        <select class="form-select form-select-lg" name="category_id" [(ngModel)]="newProduct.category_id" required>
+          <option value="" disabled selected>Selectionner le catégorie du produit</option>
+          <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+        </select>
+      </div>
+
+      <div class="form-group-custom mb-4">
+        <label class="fw-bold text-secondary small text-uppercase">Description</label>
+        <textarea class="form-control" name="description" [(ngModel)]="newProduct.description" rows="3"></textarea>
+      </div>
+
+      <div class="form-group-custom mb-4">
+        <label class="fw-bold text-secondary small text-uppercase">Prix ($)</label>
+        <input type="number" class="form-control form-control-lg" name="price" [(ngModel)]="newProduct.price" required>
+      </div>
+
+      <div class="form-group-custom mb-4">
+        <label class="fw-bold text-secondary small text-uppercase">Nombre de stock</label>
+        <input type="number" class="form-control form-control-lg" name="stock" [(ngModel)]="newProduct.stock" required>
+      </div>
+
+      <div class="form-group-custom mb-4">
+        <label class="fw-bold text-secondary small text-uppercase">Image du produit</label>
+        <div class="image-upload-box" (click)="fileInput.click()">
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" class="d-none" #fileInput>
+
+          <div *ngIf="!imageBase64" class="text-center py-4 border-dashed">
+            <i class="bi bi-cloud-arrow-up fs-2 text-primary"></i>
+            <p>Cliquez pour uploader</p>
+          </div>
+
+          <div *ngIf="imageBase64" class="text-center">
+            <img [src]="imageBase64" class="img-fluid rounded" style="max-height: 200px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="border-top pt-3 d-flex gap-3">
+        <button type="button" class="btn btn-light" (click)="resetForm()">Clear</button>
+        <button type="submit" class="btn btn-primary px-4" [disabled]="!productForm.valid || !imageBase64">
+          Save Product
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div> -->
+<div>
+  <div class="filter flex items-center mb-5">
+    <h5>Favorite products</h5>
+    <div class="flex items-center ml-auto">
+      <button (click)="openProductDialog(null)" mat-icon-button class="view__btn"><mat-icon>add</mat-icon></button>
+      <button [class.text-accent]="view === 'grid'" (click)="view = 'grid'" mat-icon-button
+        class="view__btn"><mat-icon>grid_view</mat-icon></button>
+      <button [class.text-accent]="view === 'list'" (click)="view = 'list'" mat-icon-button
+        class="view__btn"><mat-icon>list_alt</mat-icon></button>
+    </div>
+  </div>
+  <div>
+    <div *ngIf="view === 'list'" class="table-inside">
+      <div class="flex flex-col border ltLg:responsive">
+        <div class="flex items-center p-4 border-b hover:bg-blue-100">
+          <div class="w-6/12 font-medium">
+            <div class="pl-16 ml-3">Product</div>
+          </div>
+          <div class="w-2/12 font-medium">Category</div>
+          <div class="w-2/12 font-medium text-center">Price</div>
+          <div class="w-2/12 font-medium">Rating</div>
+          <div class="w-1/12 font-medium">Feedback</div>
+          <div class="w-1/12"></div>
+        </div>
+        <div class="flex items-center p-4 border-b hover:bg-blue-100" *ngFor="let product of products | slice: 0:9">
+          <div class="w-6/12">
+            <a href="" class="flex hover:text-primary">
+              <div class="max-h-16 w-16 flex-none mr-3 border" *ngIf="product?.images">
+                <img [src]="product?.images[0]" alt="img">
+              </div>
+              <h6 class="flex-auto">{{ product?.name }}</h6>
+            </a>
+          </div>
+          <div class="w-2/12">{{product?.category_name}}</div>
+          <div class="w-2/12 text-center">${{product?.price}}</div>
+          <div class="w-2/12">
+            <div class="flex items-center">
+              <mat-icon class="mr-1 text-lg leading-4 h-4 w-4 text-yellow-500">star_rate</mat-icon>
+              {{product?.rating}}
+            </div>
+          </div>
+          <div class="w-1/12">
+            <div class="flex items-center">
+              <mat-icon class="mr-1 text-lg leading-4 h-4 w-4">feedback</mat-icon>
+              {{product?.feedback}}
+            </div>
+          </div>
+          <div class="w-1/12 text-right">
+            <button class="action_icon__btn" mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu" xposition="before">
+              <button mat-menu-item (click)="openProductDialog(product)">
+                <mat-icon>edit</mat-icon>
+                <span>Modifier</span>
+              </button>
+              <!-- <button mat-menu-item>
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button> -->
+            </mat-menu>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-12 gap-4" *ngIf="view === 'grid'">
+      <div class="col-span-4" *ngFor="let product of products | slice: 0:9">
+        <mat-card>
+          <img class="m-0 mb-4" mat-card-image height="100" [src]="product.image_url" alt="product?.name" />
+          <mat-card-header class="mx-0">
+            <h3 class="text-[15px] leading-[23px]">{{ product?.name }}</h3>
+          </mat-card-header>
+          <mat-card-actions>
+            <a mat-stroked-button [routerLink]="['/products', product.id]" class="px-5">View</a>
+            <button mat-button>SHARE</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

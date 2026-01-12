@@ -1,0 +1,97 @@
+// .product-meta {
+//   li {
+//     color: #848484;
+//     border-right: 1px solid #d6d6d6;
+//     &:last-child {
+//       border: 0;
+//     }
+//   }
+// }
+// .ll-content {
+//   h2,
+//   h3,
+//   h4,
+//   h5,
+//   h6 {
+//     margin-bottom: 10px;
+//     margin-top: 30px;
+//   }
+//   p {
+//     margin-bottom: 15px;
+//     color: #7c7777;
+//   }
+//   ul,
+//   ol,
+//   dl {
+//     padding-left: 1.25rem;
+//     list-style-position: outside;
+//   }
+//   ul {
+//     list-style-type: disc;
+//   }
+//   ol {
+//     list-style-type: decimal;
+//   }
+//   li {
+//     color: #7c7777;
+//     padding: 3px 0;
+//   }
+//   blockquote {
+//     background-color: #f3f3f3;
+//     padding: 20px;
+//     margin-bottom: 20px;
+//     margin-top: 20px;
+//   }
+// }
+// .service-info {
+//   li {
+//     color: #767676;
+//     font-size: 0.85rem;
+//     display: inline-block;
+//   }
+//   .mat-icon {
+//     font-size: 14px;
+//   }
+// }
+
+// @media (min-width: 992px) and (max-width: 1199px) {
+//   ._title {
+//     font-size: 2rem;
+//   }
+// }
+// @media (max-width: 991px) {
+//   ._title {
+//     font-size: 1.7rem;
+//     line-height: 2.7rem;
+//   }
+// }
+.bg-accent { background-color: #ff9800; }
+.hover\:bg-accent-dark:hover { background-color: #f57c00; }
+
+.bg-primary-dark { background-color: #0b5ed7; }
+
+.ll-content {
+  h5, h6 {
+    color: #1a202c;
+    font-weight: 800;
+  }
+  
+  ul li {
+    position: relative;
+    padding-left: 0;
+  }
+}
+
+// Ombre portée douce pour les cartes
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+}
+
+// Animation pour le bouton "Finaliser"
+.bg-primary {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(13, 110, 253, 0.3);
+  }
+}

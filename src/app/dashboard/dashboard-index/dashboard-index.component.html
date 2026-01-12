@@ -1,0 +1,18 @@
+<div class="grid grid-cols-12 gap-4 lg:gap-8">
+	<div class="col-span-6 md:col-span-4 border rounded px-4 lg:px-8 py-8 lg:py-16">
+		<mat-icon class="text-accent mb-5">Nombre de produits</mat-icon>
+		<h6>Nombre de produits</h6>
+		<div class="count mb-3 mt-5">{{productAccounts}}</div>
+		<a [routerLink]="'/dashboard/saved-items'" class="font-semibold" mat-flat-button color="warn">Voir tous</a>
+	</div>
+	<div class="col-span-6 md:col-span-4">
+		<stat-card icon="sync" title="Nombre de paiement en cours" status="pending">
+		</stat-card>
+	</div>
+
+	<div class="col-span-6 md:col-span-4">
+		<stat-card icon="task_alt" title="Nombre de paiement effectué" status="paid">
+		</stat-card>
+	</div>
+
+</div>
