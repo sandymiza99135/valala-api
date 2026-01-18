@@ -141,3 +141,52 @@ export const getAllActivity = async (req: Request, res: Response) => {
     }
 }
 
+export const getActivityById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        // 1. Requête SQL détaillée pour une seule activité
+        const query = `
+            SELECT 
+                a.*, 
+                u.name as organisateur_nom,
+                u.email as organisateur_email,
+                GROUP_CONCAT(ai.url_image) as images_list
+            FROM activites a
+            LEFT JOIN users u ON a.user_id = u.id
+            LEFT JOIN activite_images ai ON a.id = ai.activite_id
+            WHERE a.id = ?
+            GROUP BY a.id
+        `;
+
+        const [rows]: any = await db.query(query, [id]);
+
+        // 2. Vérification si l'activité existe
+        if (rows.length === 0) {
+            return res.status(404).json({ 
+                message: "Activité non trouvée" 
+            });
+        }
+
+        const activity = rows[0];
+
+        // 3. Formatage de la liste des images (string vers tableau)
+        const formattedActivity = {
+            ...activity,
+            images: activity.images_list ? activity.images_list.split(',') : []
+        };
+
+        // Supprimer la chaîne brute pour plus de propreté
+        delete formattedActivity.images_list;
+
+        // 4. Réponse
+        res.json(formattedActivity);
+
+    } catch (error) {
+        console.error("Erreur Get Activity By Id:", error);
+        res.status(500).json({ 
+            error: "Erreur lors de la récupération des détails de l'activité" 
+        });
+    }
+};
+
