@@ -7,30 +7,49 @@ import { deleteImage, uploadImage } from '../service/upload-service';
 // Configuration Cloudinary
 
 export const addActivity = async (req: Request, res: Response) => {
+    // Note: 'images' peut maintenant contenir des images ou des vidéos (Base64)
     const { titre, description, date_activite, lieu, user_id, images, statut } = req.body;
 
     try {
+        // 1. Insertion de l'activité
         const [result]: any = await db.query(
             "INSERT INTO activites (titre, description, date_activite, lieu, user_id, statut) VALUES (?, ?, ?, ?, ?, ?)",
             [titre, description, date_activite, lieu, user_id, statut]
         );
         const activiteId = result.insertId;
 
+        // 2. Traitement des médias (Images et Vidéos)
         if (images && images.length > 0) {
             for (let [index, base64Str] of images.entries()) {
+                // Regex ajustée pour capturer n'importe quel type de média (image/jpeg, video/mp4, etc.)
                 const matches = base64Str.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-                if (matches) {
-                    const buffer = Buffer.from(matches[2], 'base64');
-                    const fileName = `act_${activiteId}_${index}_${Date.now()}.jpg`;
 
+                if (matches) {
+                    const mimeType = matches[1]; // ex: "video/mp4" ou "image/jpeg"
+                    const buffer = Buffer.from(matches[2], 'base64');
+
+                    // Déterminer l'extension en fonction du type MIME
+                    const extension = mimeType.split('/')[1];
+                    const isVideo = mimeType.startsWith('video');
+
+                    const fileName = `${isVideo ? 'vid' : 'act'}_${activiteId}_${index}_${Date.now()}.${extension}`;
+
+                    // On utilise votre fonction uploadImage (elle devrait idéalement être renommée uploadToCloudinary ou uploadFile)
                     const finalPath = await uploadImage(buffer, fileName);
-                    await db.query("INSERT INTO activite_images (activite_id, url_image) VALUES (?, ?)", [activiteId, finalPath]);
+
+                    // 3. Insertion dans la table des médias
+                    // Conseil : Assurez-vous que votre table 'activite_images' peut stocker des URLs de vidéos
+                    await db.query(
+                        "INSERT INTO activite_images (activite_id, url_image) VALUES (?, ?)",
+                        [activiteId, finalPath]
+                    );
                 }
             }
         }
-        res.json({ success: true, message: "Activité créée !" });
+        res.json({ success: true, message: "Activité et médias enregistrés !" });
     } catch (error) {
-        res.status(500).json({ error: "Erreur serveur" });
+        console.error("Erreur Upload:", error);
+        res.status(500).json({ error: "Erreur lors de la création de l'activité" });
     }
 };
 
@@ -39,33 +58,75 @@ export const updateActivity = async (req: Request, res: Response) => {
     const { titre, description, date_activite, lieu, images, statut } = req.body;
 
     try {
+        // 1. Mise à jour des infos textuelles
         await db.query(
             "UPDATE activites SET titre = ?, description = ?, date_activite = ?, lieu = ?, statut = ? WHERE id = ?",
             [titre, description, date_activite, lieu, statut, id]
         );
 
-        if (images && images.length > 0) {
-            // 1. Nettoyage des anciennes images
-            const [oldImages]: any = await db.query("SELECT url_image FROM activite_images WHERE activite_id = ?", [id]);
-            for (let img of oldImages) {
-                await deleteImage(img.url_image);
-            }
-            await db.query("DELETE FROM activite_images WHERE activite_id = ?", [id]);
+        if (images && Array.isArray(images)) {
+            // 2. Identifier les images à supprimer 
+            // On récupère ce qui est en base actuellement
+            const [currentRows]: any = await db.query("SELECT url_image FROM activite_images WHERE activite_id = ?", [id]);
+            const currentUrls = currentRows.map((r: any) => r.url_image);
 
-            // 2. Upload des nouvelles
-            for (let [index, base64Str] of images.entries()) {
-                const matches = base64Str.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-                if (matches) {
-                    const buffer = Buffer.from(matches[2], 'base64');
-                    const fileName = `act_${id}_${index}_${Date.now()}.jpg`;
+            // Celles qui ne sont plus dans le tableau 'images' envoyé par le front doivent être supprimées
+            const urlsToKeep = images.filter(img => !img.startsWith('data:'));
+            const urlsToDelete = currentUrls.filter((url: string) => !urlsToKeep.includes(url));
+
+            for (let url of urlsToDelete) {
+                await deleteImage(url); // Votre fonction qui supprime physiquement le fichier
+                await db.query("DELETE FROM activite_images WHERE url_image = ?", [url]);
+            }
+
+            // 3. Traiter uniquement les NOUVEAUX médias (ceux en Base64)
+            const newMedia = images.filter(img => img.startsWith('data:'));
+
+            for (let [index, base64Str] of newMedia.entries()) {
+                try {
+                    // 1. Vérification de sécurité de base
+                    if (!base64Str.includes(';base64,')) {
+                        console.error("L'élément n'est pas un Data URI valide:", base64Str.substring(0, 30));
+                        continue;
+                    }
+
+                    // 2. Découpage manuel de la chaîne
+                    // Format: "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+                    const parts = base64Str.split(';base64,');
+                    const header = parts[0]; // "data:image/jpeg"
+                    const base64Data = parts[1]; // "/9j/4AAQSkZJRg..."
+
+                    // 3. Extraction du type MIME
+                    const mimeType = header.split(':')[1]; // "image/jpeg"
+
+                    // 4. Création du Buffer
+                    const buffer = Buffer.from(base64Data, 'base64');
+
+                    // 5. Détermination de l'extension et du type
+                    const extension = mimeType.split('/')[1] || 'jpg';
+                    const isVideo = mimeType.startsWith('video');
+
+                    console.log(`Traitement de : ${mimeType} (${buffer.length} octets)`);
+
+                    // 6. Upload
+                    const fileName = `${isVideo ? 'vid' : 'act'}_${id}_upd_${Date.now()}_${index}.${extension}`;
                     const finalPath = await uploadImage(buffer, fileName);
-                    await db.query("INSERT INTO activite_images (activite_id, url_image) VALUES (?, ?)", [id, finalPath]);
+
+                    await db.query(
+                        "INSERT INTO activite_images (activite_id, url_image) VALUES (?, ?)",
+                        [id, finalPath]
+                    );
+
+                } catch (err) {
+                    console.error("Erreur lors du traitement du média index " + index, err);
                 }
             }
         }
-        res.json({ success: true, message: "Mise à jour réussie !" });
+
+        res.json({ success: true, message: "Activité mise à jour avec succès !" });
     } catch (error) {
-        res.status(500).json({ error: "Erreur serveur" });
+        console.error("Update Error:", error);
+        res.status(500).json({ error: "Erreur lors de la mise à jour" });
     }
 };
 
@@ -163,8 +224,8 @@ export const getActivityById = async (req: Request, res: Response) => {
 
         // 2. Vérification si l'activité existe
         if (rows.length === 0) {
-            return res.status(404).json({ 
-                message: "Activité non trouvée" 
+            return res.status(404).json({
+                message: "Activité non trouvée"
             });
         }
 
@@ -184,8 +245,8 @@ export const getActivityById = async (req: Request, res: Response) => {
 
     } catch (error) {
         console.error("Erreur Get Activity By Id:", error);
-        res.status(500).json({ 
-            error: "Erreur lors de la récupération des détails de l'activité" 
+        res.status(500).json({
+            error: "Erreur lors de la récupération des détails de l'activité"
         });
     }
 };
