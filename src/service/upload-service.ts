@@ -6,7 +6,8 @@ import fs from 'fs';
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  clock_drift: -3600000
 });
 
 /**
@@ -16,11 +17,20 @@ export const uploadImage = async (buffer: Buffer, fileName: string): Promise<str
     const strategy = process.env.UPLOAD_STRATEGY || 'local';
 
     if (strategy === 'cloudinary') {
+
+        const pcTime = Math.round(new Date().getTime() / 1000);
+    
+    // 2. On ajoute manuellement le décalage constaté dans votre erreur
+    // Votre erreur dit 16:39 alors qu'il est 18:24 -> environ 105 minutes
+    // On va ajouter 2 heures (7200 secondes) pour être large
+    const adjustedTimestamp = pcTime + 7200; 
+
         return new Promise((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 { 
                     folder: 'activites', 
-                    public_id: fileName.split('.')[0] 
+                    public_id: fileName.split('.')[0] ,
+                     timestamp: adjustedTimestamp // On envoie l'heure corrigée
                 },
                 (error, result) => {
                     if (error) return reject(error);
