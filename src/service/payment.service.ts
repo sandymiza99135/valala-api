@@ -2,6 +2,7 @@ import axios from 'axios';
 import { db } from '../config/db';
 import { PaypalHelper } from './paypal.service';
 import Stripe from 'stripe';
+import { MailService } from './mail.service';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_...');
 
 export class PaymentService {
@@ -442,41 +443,53 @@ export class PaymentService {
         return response.data;
     }
     static async confirmOrder(paymentIntentId: string) {
-        try {
-            // On demande à Stripe l'état réel du paiement pour éviter la fraude
-            const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
-            console.log(intent);
+    try {
+        const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-            if (intent.status === 'succeeded') {
-                const orderId = intent.metadata.order_id;
-                console.log(orderId);
+        if (intent.status === 'succeeded') {
+            const orderId = intent.metadata.order_id;
 
-                const [resultOrderUpdate] = await db.execute(
-                    `UPDATE orders SET status = 'paid' WHERE id = ?`,
-                    [orderId]
-                );
-                console.log('checko and  update order ok ', resultOrderUpdate);
-                // Cette requête rejoint la table des détails de commande pour savoir quoi déduire
-                const updateStockQuery = `
-            UPDATE products p
-            JOIN order_items oi ON p.id = oi.product_id
-            SET p.stock = p.stock - oi.quantity
-            WHERE oi.order_id = ?
-        `;
+            // 1. Mise à jour du statut de la commande
+            await db.execute(`UPDATE orders SET status = 'paid' WHERE id = ?`, [orderId]);
 
-                const [result] = await db.execute(updateStockQuery, [orderId]);
-                console.log('checko and  update ok ', result);
+            // 2. Mise à jour des stocks
+            const updateStockQuery = `
+                UPDATE products p
+                JOIN order_items oi ON p.id = oi.product_id
+                SET p.stock = p.stock - oi.quantity
+                WHERE oi.order_id = ?
+            `;
+            await db.execute(updateStockQuery, [orderId]);
 
+            // 3. RÉCUPÉRATION DES INFOS POUR LE MAIL
+            // On récupère les infos client + le montant total
+            const [orderRows]: any = await db.execute(
+                `SELECT o.customer_email as email, o.customer_name as name, o.total_amount 
+                 FROM orders o 
+                 WHERE o.id = ?`, 
+                [orderId]
+            );
 
-                return { success: true };
+            if (orderRows.length > 0) {
+                const orderData = {
+                    email: orderRows[0].email,
+                    name: orderRows[0].name,
+                    amount: orderRows[0].total_amount,
+                    orderId: orderId,
+                    transactionId: paymentIntentId
+                };
+
+                // 4. ENVOI DU MAIL
+                await MailService.sendPurchaseEmail(orderData);
             }
-        } catch (error) {
-            console.log("error ceck status ", error);
 
+            return { success: true };
         }
-
+    } catch (error) {
+        console.error("Erreur confirmation commande:", error);
         throw new Error("Paiement non validé");
     }
+}
     static async handlePaymentSuccess(paymentIntent: any) {
         const orderId = paymentIntent.metadata.order_id;
         const stripePaymentId = paymentIntent.id;
@@ -492,6 +505,12 @@ export class PaymentService {
              WHERE id = ? AND status = 'pending'`,
             [stripePaymentId, orderId]
         );
+        const [result2]: any = await db.execute(
+            `UPDATE orders 
+             WHERE id = ? `,
+            [orderId]
+        );
+        
 
         if (result.affectedRows === 0) {
             console.warn(`La commande ${orderId} est déjà payée ou n'existe pas.`);
@@ -593,7 +612,8 @@ export class PaymentService {
         if (intent.status === 'succeeded') {
             // 2. Récupération de l'ID du don stocké dans les métadonnées lors de l'initialisation
             const donationId = intent.metadata.donation_id;
-
+            
+            
             if (!donationId) {
                 console.error("Aucun donation_id trouvé dans les métadonnées Stripe");
                 throw new Error("Données de transaction manquantes");
@@ -607,9 +627,20 @@ export class PaymentService {
                  WHERE id = ?`,
                 [intent.id, donationId]
             );
+            const [result2] = await db.execute(
+                `select * from donations  
+                 WHERE id = ?`,
+                [donationId]
+            );
+            console.log(result2);
 
             console.log(`Donation ${donationId} confirmée avec succès.`);
-            
+            try{
+                
+                await MailService.successDonation(result2)
+            }catch{
+
+            }
             return { 
                 success: true, 
                 donationId: donationId,
@@ -624,7 +655,39 @@ export class PaymentService {
     }
 
     throw new Error("Le paiement du don n'a pas pu être validé");
-}
+  }
+
+  // 2. Sauvegarde de la commande + Token Vault
+    static async saveOrderAndVault(orderData: any) {
+        try {
+            const { vaultToken, amount, user, items } = orderData;
+            const tx_ref = `valala-${Date.now()}`;
+            const email = user?.email || "client@gmail.com";
+
+            // Enregistrer la commande (Note l'ajout de paypal_vault_token)
+            const [orderResult]: any = await db.execute(
+                `INSERT INTO orders 
+                 (tx_ref, transaction_id, customer_email, total_amount, status, customer_name, paypal_vault_token) 
+                 VALUES (?, ?, ?, ?, 'completed', ?, ?)`,
+                [tx_ref, vaultToken, email, amount, user?.name, vaultToken]
+            );
+
+            const orderId = orderResult.insertId;
+
+            // Enregistrer les items
+            for (const item of items) {
+                await db.execute(
+                    `INSERT INTO order_items (order_id, product_name, quantity, unit_price, product_id) VALUES (?, ?, ?, ?, ?)`,
+                    [orderId, item.name, item.quantity, item.price, item.id]
+                );
+            }
+
+            return { success: true, orderId, tx_ref };
+        } catch (error: any) {
+            throw new Error(`Erreur DB: ${error.message}`);
+        }
+    }
+  
 
 
 }

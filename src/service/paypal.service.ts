@@ -12,6 +12,8 @@ export class PaypalHelper {
                 password: process.env.PAYPAL_CLIENT_SECRET || ""
             }
         });
+        console.log("response : ",response);
+        
 
         return response.data.access_token;
     }

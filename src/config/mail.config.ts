@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer';
 
 export const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: process.env.MAIL_SERVICE,
   auth: {
-    user: 'rakotonindrinasandiarivelo@gmail.com',
-    pass: 'ggik mecb eoka tdmm' // Pas votre mot de passe habituel !
+    user: process.env.MAIL_USER_NAME,
+    pass: process.env.MAIL_PASS // Pas votre mot de passe habituel !
   }
 });

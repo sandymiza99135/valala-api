@@ -30,7 +30,8 @@ export const uploadImage = async (buffer: Buffer, fileName: string): Promise<str
                 { 
                     folder: 'activites', 
                     public_id: fileName.split('.')[0] ,
-                     timestamp: adjustedTimestamp // On envoie l'heure corrigée
+                    resource_type: 'auto',
+                    timestamp: adjustedTimestamp // On envoie l'heure corrigée
                 },
                 (error, result) => {
                     if (error) return reject(error);

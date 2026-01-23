@@ -5,6 +5,7 @@ import productRoute from './route/product.route';
 import paymentRoute from './route/payment.route';
 import activityRoute from './route/activity.route';
 import donRoute from './route/don.route';
+import paypalRoute from './route/paypal.route';
 
 //import { errorHandler } from './middlewares/error.middleware';
 
@@ -20,6 +21,7 @@ app.use('/api/product', productRoute);
 app.use('/api/order', paymentRoute);
 app.use('/api/activity', activityRoute);
 app.use('/api/don', donRoute);
+app.use('/api/paypal', paypalRoute);
 app.get("/",(req:any,res:any)=>res.send(process.env.PAYPAL_API));
 
 // app.use(errorHandler);

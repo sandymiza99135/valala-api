@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
-import path from 'path';
-import fs from 'fs';
 import { db } from '../config/db';
-import { v2 as cloudinary } from 'cloudinary';
 import { deleteImage, uploadImage } from '../service/upload-service';
 // Configuration Cloudinary
 
@@ -33,7 +30,8 @@ export const addActivity = async (req: Request, res: Response) => {
                     const isVideo = mimeType.startsWith('video');
 
                     const fileName = `${isVideo ? 'vid' : 'act'}_${activiteId}_${index}_${Date.now()}.${extension}`;
-
+                    console.log(fileName);
+                    
                     // On utilise votre fonction uploadImage (elle devrait idéalement être renommée uploadToCloudinary ou uploadFile)
                     const finalPath = await uploadImage(buffer, fileName);
 
@@ -61,7 +59,7 @@ export const updateActivity = async (req: Request, res: Response) => {
         // 1. Mise à jour des infos textuelles
         await db.query(
             "UPDATE activites SET titre = ?, description = ?, date_activite = ?, lieu = ?, statut = ? WHERE id = ?",
-            [titre, description, date_activite, lieu, statut, id]
+            [titre, description, new Date(date_activite), lieu, statut, id]
         );
 
         if (images && Array.isArray(images)) {
@@ -110,6 +108,8 @@ export const updateActivity = async (req: Request, res: Response) => {
 
                     // 6. Upload
                     const fileName = `${isVideo ? 'vid' : 'act'}_${id}_upd_${Date.now()}_${index}.${extension}`;
+                    console.log(fileName);
+                    
                     const finalPath = await uploadImage(buffer, fileName);
 
                     await db.query(
