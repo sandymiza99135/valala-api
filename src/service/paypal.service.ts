@@ -3,6 +3,8 @@ import axios from "axios";
 
 export class PaypalHelper {
     static async getAccessToken() {
+        console.log("authentification get ");
+        
         const response = await axios({
             url: `https://api-m.sandbox.paypal.com/v1/oauth2/token`,
             method: "post",

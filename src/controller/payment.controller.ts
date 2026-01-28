@@ -28,6 +28,8 @@ export const initializePayment = async (req: Request, res: Response) => {
 };
 export const initializePaypalPayment = async (req: Request, res: Response) => {
      try {
+        console.log(req.body);
+        
         const { orderID, amount, user, items } = req.body;
 
         // Validation

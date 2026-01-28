@@ -101,3 +101,52 @@ export const getAllDonations = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: "Erreur serveur" });
     }
 };
+export const initializePaypalPayment = async (req: Request, res: Response) => {
+     try {
+        console.log(req.body);
+        
+        const { orderID, amount, user } = req.body;
+
+        // Validation
+        if (!orderID || !amount || !user) {
+            return res.status(400).json({ 
+                error: 'Données manquantes',
+                required: ['orderID', 'amount', 'user', 'items']
+            });
+        }
+
+        const result = await PaymentService.saveDonOrderFromPaypal(
+            orderID,
+            amount,
+            user
+        );
+
+        res.json(result);
+
+    } catch (error: any) {
+        console.error('Erreur save-order:', error);
+        res.status(500).json({ 
+            error: error.message 
+        });
+    }
+  
+};
+
+export const checkPaypalPaymentStatus = async (req: Request, res: Response) => {
+    try {
+          const id = req.params.id;
+          console.log("orderId paypal : ",id);
+          
+       
+        const paymentData = await PaymentService.checkStatusDonPaypalPayment(id
+        );
+        console.log(paymentData);
+        
+        res.json(paymentData);
+
+    } catch (error) {
+        console.log(error);
+        
+        res.status(500).json({ error: 'Erreur lors de la vérification' });
+    }
+};

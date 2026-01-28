@@ -4,6 +4,8 @@ import { Request, Response } from 'express';
 export const createPaypalSetupToken = async (req: Request, res: Response) => {
     try {
         const accessToken = await PaypalHelper.getAccessToken();
+        console.log(accessToken);
+        
         const response = await fetch('https://api-m.sandbox.paypal.com/v3/vault/setup-tokens', {
             method: 'POST',
             headers: { 

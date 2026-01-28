@@ -127,6 +127,109 @@ export class PaymentService {
         }
     }
 
+     // ✅ 1️⃣ Enregistrer la commande APRÈS approbation PayPal (appelé dans onApprove)
+    static async saveDonOrderFromPaypal(orderID : string,amount: number, userData: any) {
+        const tx_ref = `don-${Date.now()}`;
+        const email = userData?.email || "donateur@gmail.com";
+        let donationId: number | null = null;
+
+        try {
+            // 1. Insertion initiale dans la table donations (statut pending)
+            const [result]: any = await db.execute(
+                `INSERT INTO donations 
+            (donor_name, email, amount, currency, status, stripe_session_id,stripe_payment_intent) 
+            VALUES (?, ?, ?, 'EUR', 'pending', ?, ?)`,
+                [userData?.name || 'Anonyme', email, amount, tx_ref ,orderID]
+            );
+            donationId = result.insertId;
+
+
+           
+
+            return {
+                success: true,
+                donationId,
+                tx_ref
+            };
+
+        } catch (error: any) {
+            console.error("❌ Erreur lors de l'enregistrement:", error);
+            throw new Error(`Échec d'enregistrement: ${error.message}`);
+        }
+    }
+    // ✅ 2️⃣ Capturer le paiement PayPal et mettre à jour le statut
+    static async checkStatusDonPaypalPayment(paypalOrderId: string) {
+        try {
+            const token = await PaypalHelper.getAccessToken();
+
+            console.log(`📦 Capture du paiement pour orderID: ${paypalOrderId}`);
+
+            // Capturer le paiement sur PayPal
+            const capture = await axios.post(
+                `${process.env.PAYPAL_API}/v2/checkout/orders/${paypalOrderId}/capture`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            console.log("✅ Réponse capture PayPal:", capture.data.status);
+            console.log("Détails capture:", JSON.stringify(capture.data, null, 2));
+
+            // Vérifier si la capture a réussi
+            if (capture.data.status === "COMPLETED") {
+
+                // Mettre à jour le statut dans la DB en utilisant le transaction_id (orderID)
+                const [updateResult]: any = await db.execute(
+                    `UPDATE donations SET status = 'complete' WHERE stripe_payment_intent = ?`,
+                    [paypalOrderId]
+                );
+
+                if (updateResult.affectedRows === 0) {
+                    console.warn(`⚠️ Aucune transaction trouvée avec transaction_id: ${paypalOrderId}`);
+                } else {
+                    console.log(`✅ Statut mis à jour pour la donation ${paypalOrderId}`);
+                }
+
+                return {
+                    success: true,
+                    status: capture.data.status,
+                    orderID: capture.data.id,
+                    captureID: capture.data.purchase_units[0]?.payments?.captures?.[0]?.id,
+                    payer: {
+                        email: capture.data.payer?.email_address,
+                        name: capture.data.payer?.name?.given_name + ' ' + capture.data.payer?.name?.surname
+                    }
+                };
+
+            } else {
+                // Si le statut n'est pas COMPLETED
+                console.error(`❌ Statut de capture inattendu: ${capture.data.status}`);
+
+                return {
+                    success: false,
+                    status: capture.data.status,
+                    message: "Le paiement n'a pas été complété"
+                };
+            }
+
+        } catch (error: any) {
+            console.error("❌ Erreur lors de la capture PayPal:");
+            console.error("Message:", error.message);
+            console.error("Réponse:", error.response?.data);
+
+            // Gestion des erreurs spécifiques PayPal
+            if (error.response?.data?.name === "UNPROCESSABLE_ENTITY") {
+                throw new Error("Cette commande a déjà été capturée");
+            }
+
+            throw new Error(`Échec de la capture: ${error.response?.data?.message || error.message}`);
+        }
+    }
+
     // ✅ 2️⃣ Capturer le paiement PayPal et mettre à jour le statut
     static async checkStatusPaypalPayment(paypalOrderId: string) {
         try {

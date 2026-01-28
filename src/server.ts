@@ -509,6 +509,74 @@ import app from './app';
 import { db } from './config/db';
 
 const PORT = process.env.PORT || 3000;
+const paypal = require('@paypal/checkout-server-sdk');
+
+// let environment = new paypal.core.SandboxEnvironment(
+//   process.env.PAYPAL_CLIENT_ID ,
+//   process.env.PAYPAL_CLIENT_SECRET 
+// );
+// let client = new paypal.core.PayPalHttpClient(environment);
+
+// // Fonction pour vérifier les credentials
+// async function verifyCredentials() {
+//     try {
+//         // Créer une requête simple pour tester l'authentification
+//         let request = new paypal.orders.OrdersGetRequest('FAKE_ORDER_ID');
+        
+//         // Si on obtient une erreur 404 (order not found), c'est bon signe = credentials valides
+//         // Si on obtient une erreur 401 (unauthorized), credentials invalides
+//         await client.execute(request);
+        
+//     } catch (error: any) {
+//         if (error.statusCode === 404) {
+//             console.log('✅ Credentials VALIDES - Authentification réussie');
+//             return true;
+//         } else if (error.statusCode === 401) {
+//             console.log('❌ Credentials INVALIDES - Authentification échouée');
+//             console.log('Message:', error.message);
+//             return false;
+//         } else {
+//             console.log('Statut:', error.statusCode);
+//             console.log('Message:', error.message);
+//             return null;
+//         }
+//     }
+// }
+
+// // Méthode alternative plus simple : créer un paiement test
+// async function testCreateOrder() {
+//     try {
+//         let request = new paypal.orders.OrdersCreateRequest();
+//         request.requestBody({
+//             intent: 'CAPTURE',
+//             purchase_units: [{
+//                 amount: {
+//                     currency_code: 'EUR',
+//                     value: '1.00'
+//                 }
+//             }]
+//         });
+
+//         let response = await client.execute(request);
+//         console.log('✅ Credentials VALIDES');
+//         console.log('Order ID créé:', response.result.id);
+//         console.log('Status:', response.result.status);
+//         console.log('Order ID créé:', response.result);
+//         return true;
+        
+//     } catch (error: any) {
+//         console.log('❌ Erreur:', error.statusCode);
+//         console.log('Message:', error.message);
+//         return false;
+//     }
+// }
+
+// // Exécuter les tests
+// console.log('Test 1: Vérification des credentials...');
+// verifyCredentials();
+
+// console.log('\nTest 2: Création d\'une commande test...');
+// testCreateOrder();
 
 const startServer = async () => {
   try {
