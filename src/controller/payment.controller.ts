@@ -30,8 +30,9 @@ export const initializePaypalPayment = async (req: Request, res: Response) => {
      try {
         console.log(req.body);
         
-        const { orderID, amount, user, items } = req.body;
-
+        const { orderID, amount, user, items ,address ,phone} = req.body;
+        user.address = address;
+        user.phone = phone;
         // Validation
         if (!orderID || !amount || !user || !items) {
             return res.status(400).json({ 

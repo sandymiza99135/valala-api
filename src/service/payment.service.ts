@@ -90,15 +90,16 @@ export class PaymentService {
             const { orderID, amount, user, items } = orderData;
             const tx_ref = `valala-${Date.now()}`;
             const email = user?.email || "client@gmail.com";
-
+            console.log(user);
+            
             console.log(`📝 Enregistrement de la commande pour orderID: ${orderID}`);
 
             // Enregistrer la commande dans la DB
             const [orderResult]: any = await db.execute(
                 `INSERT INTO orders 
-                 (tx_ref, transaction_id, customer_email, total_amount, status, customer_name) 
-                 VALUES (?, ?, ?, ?, 'pending', ?)`,
-                [tx_ref, orderID, email, amount, user?.name]
+                 (tx_ref, transaction_id, customer_email, total_amount, status, customer_name ,delivery_adress,phone) 
+                 VALUES (?, ?, ?, ?, 'pending', ?, ?, ?)`,
+                [tx_ref, orderID, email, amount, user?.name, user?.address, user?.phone]
             );
 
             const orderId = orderResult.insertId;
@@ -790,6 +791,7 @@ export class PaymentService {
             throw new Error(`Erreur DB: ${error.message}`);
         }
     }
+
   
 
 
