@@ -213,12 +213,14 @@ export const getAllProduct = async (req: Request, res: Response) => {
       // Si c'est un pack (fixe ou flexible), on récupère les items liés
       if (product.is_pack) {
         const [items]: any = await db.query(
-          `SELECT p.id, p.name, p.price, p.stock 
+          `SELECT p.id, p.name, p.price, p.stock ,c.name as category_name
            FROM pack_items pi 
-           JOIN products p ON pi.product_id = p.id 
+           JOIN products p ON pi.product_id = p.id  LEFT JOIN categories c ON p.category_id = c.id
            WHERE pi.pack_id = ?`, 
           [product.id]
         );
+        console.log();
+        
         pack_contents = items;
 
         if (product.original_price && product.price < product.original_price) {

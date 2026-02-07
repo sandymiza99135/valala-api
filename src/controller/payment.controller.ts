@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PaymentService } from '../service/payment.service';
 import { db } from '../config/db';
 import Stripe from 'stripe';
+import { transporter } from '../config/mail.config';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_...');
 export const initializePayment = async (req: Request, res: Response) => {
     try {
@@ -255,6 +256,62 @@ export const CheckPaymentStripe = async (req: Request, res: Response) => {
         });
     }
 };
+export  const changeDeliveryStatus = async  (req: Request, res: Response) => {
+    const orderId = req.params.id;
+    const { delivery_status } = req.body;
+
+    try {
+        // 1. Récupérer les infos de la commande (notamment l'email du client)
+        const order : any = await db.query(
+                `select * from orders 
+               WHERE id = ?`,
+                [orderId] // payload.id est l'ID Flutterwave
+            );
+
+        console.log(order[0][0]);
+        
+        if (!order) return res.status(404).json({ message: "Commande non trouvée." });
+
+        const oldStatus = order.delivery_status;
+
+        // 2. Mise à jour en base de données
+        await db.query(
+                 `UPDATE orders 
+                 SET delivery_status = ?, 
+                     updated_at = NOW() 
+                 WHERE id = ?`,
+                [delivery_status,orderId] // payload.id est l'ID Flutterwave
+            );
+
+        // 3. LOGIQUE D'ENVOI DE MAIL : Si on passe à 'delivered'
+        if (delivery_status === 'delivered' && oldStatus !== 'delivered') {
+            const mailOptions = {
+                from: process.env.MAIL_USER_NAME,
+                to: order[0][0].customer_email, // L'email stocké dans votre table orders
+                subject: 'Votre colis est arrivé ! 📦',
+                html: `
+                    <h1>Bonjour ${order[0][0].customer_name},</h1>
+                    <p>Bonne nouvelle ! Votre commande <strong>#${order[0][0].id}</strong> a été livrée avec succès.</p>
+                    <p>Merci de votre soutien à notre association.</p>
+                    <br>
+                    <p>À bientôt !</p>
+                `
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) console.log("Erreur mail:", error);
+                else console.log("Email de confirmation envoyé à: " + order.email);
+            });
+        }
+
+        res.json({ success: true, message: "Statut mis à jour et mail envoyé si livré." });
+
+    } catch (error) {
+        console.error(error);
+        
+        res.status(500).json({ message: "Erreur serveur." });
+    }
+}
 
     
 // export  const stripeWebhook = async (req: Request, res: Response) =>{
