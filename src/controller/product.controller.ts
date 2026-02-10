@@ -127,6 +127,37 @@ export const addProduct = async (req: Request, res: Response) => {
   }
 };
 
+export const ActivateOrDesactivateProduct = async (req: Request, res: Response) => {
+  const connection = await db.getConnection();
+  await connection.beginTransaction();
+
+  try {
+    const { id } = req.params;
+    // 1. Récupération des infos de base du produit
+    const query = `
+      SELECT p.is_active from products p WHERE p.id = ?`;
+    
+    const [products]: any = await db.query(query, [id]);
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: "Produit introuvable" });
+    }
+ 
+    // 1. Mise à jour des infos principales
+    await connection.query(
+      `UPDATE products SET 
+        is_active = ? WHERE id = ?`,
+      [!products[0].is_active, id]
+    );
+    await connection.commit();
+    res.json({ message: 'Produit mis à jour avec succès !' });
+  }catch(error){
+    console.log(error);
+    
+     await connection.rollback();
+    res.status(500).json({ error: 'Erreur lors de la mise à jour' });
+  }
+}
+
 // --- 3. METTRE À JOUR UN PRODUIT/PACK (Ajusté avec original_price) ---
 export const updateProduct = async (req: Request, res: Response) => {
   const connection = await db.getConnection();
@@ -219,7 +250,7 @@ export const getAllProduct = async (req: Request, res: Response) => {
            WHERE pi.pack_id = ?`, 
           [product.id]
         );
-        console.log();
+        console.log(items);
         
         pack_contents = items;
 
